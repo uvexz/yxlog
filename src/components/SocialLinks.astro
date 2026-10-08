@@ -1,0 +1,86 @@
+---
+import {
+	DiscordLogoIcon,
+	EnvelopeSimpleIcon,
+	FacebookLogoIcon,
+	FediverseLogoIcon,
+	GithubLogoIcon,
+	GitlabLogoIcon,
+	GlobeIcon,
+	GoogleLogoIcon,
+	InstagramLogoIcon,
+	LinkedinLogoIcon,
+	MastodonLogoIcon,
+	MatrixLogoIcon,
+	MediumLogoIcon,
+	PinterestLogoIcon,
+	PlanetIcon,
+	RedditLogoIcon,
+	RssIcon,
+	SnapchatLogoIcon,
+	TelegramLogoIcon,
+	ThreadsLogoIcon,
+	TiktokLogoIcon,
+	TumblrLogoIcon,
+	TwitterLogoIcon,
+	WechatLogoIcon,
+	WhatsappLogoIcon,
+	XLogoIcon,
+	YoutubeLogoIcon,
+} from '@phosphor-icons/react/ssr';
+import type { Icon, IconWeight } from '@phosphor-icons/react';
+import { siteConfig, type SocialIcon } from '../config/site';
+
+interface Props {
+	class?: string;
+	size?: number;
+}
+
+const { class: className, size = 17 } = Astro.props;
+
+const icons: Record<SocialIcon, { Icon: Icon; weight?: IconWeight }> = {
+	github: { Icon: GithubLogoIcon },
+	gitlab: { Icon: GitlabLogoIcon },
+	x: { Icon: XLogoIcon },
+	twitter: { Icon: TwitterLogoIcon },
+	mastodon: { Icon: MastodonLogoIcon },
+	facebook: { Icon: FacebookLogoIcon },
+	google: { Icon: GoogleLogoIcon },
+	instagram: { Icon: InstagramLogoIcon },
+	wechat: { Icon: WechatLogoIcon },
+	tiktok: { Icon: TiktokLogoIcon },
+	telegram: { Icon: TelegramLogoIcon },
+	threads: { Icon: ThreadsLogoIcon },
+	youtube: { Icon: YoutubeLogoIcon },
+	linkedin: { Icon: LinkedinLogoIcon },
+	reddit: { Icon: RedditLogoIcon },
+	discord: { Icon: DiscordLogoIcon },
+	whatsapp: { Icon: WhatsappLogoIcon },
+	pinterest: { Icon: PinterestLogoIcon },
+	snapchat: { Icon: SnapchatLogoIcon },
+	tumblr: { Icon: TumblrLogoIcon },
+	medium: { Icon: MediumLogoIcon },
+	matrix: { Icon: MatrixLogoIcon },
+	fediverse: { Icon: FediverseLogoIcon },
+	email: { Icon: EnvelopeSimpleIcon },
+	rss: { Icon: RssIcon },
+	web: { Icon: GlobeIcon },
+	planet: { Icon: PlanetIcon },
+};
+---
+
+<div class:list={['flex items-center gap-4 text-slate-400', className]}>
+	{siteConfig.social.map((link) => {
+		const { Icon, weight } = icons[link.icon];
+		return (
+			<a
+				href={link.href}
+				aria-label={link.label}
+				{...(link.icon !== 'email' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+				class="transition-colors hover:text-gray-900"
+			>
+				<Icon size={size} weight={weight} aria-hidden="true" />
+			</a>
+		);
+	})}
+</div>

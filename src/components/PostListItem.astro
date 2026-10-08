@@ -1,0 +1,30 @@
+---
+import { formatDate } from '../lib/posts';
+
+interface Props {
+	title: string;
+	href: string;
+	pubDate: Date;
+}
+
+const { title, href, pubDate } = Astro.props;
+---
+
+<li>
+	<a href={href} class="group flex items-center justify-between gap-5 py-7 sm:py-8">
+		<div>
+			<div class="text-[11px] tabular-nums tracking-wide text-slate-400">
+				{formatDate(pubDate)}
+			</div>
+			<h2
+				class="mt-2 text-[15px] font-medium text-gray-800 transition-colors group-hover:text-gray-950 sm:text-base"
+			>
+				{title}
+			</h2>
+		</div>
+		<span
+			aria-hidden="true"
+			class="shrink-0 text-slate-400 transition-transform group-hover:translate-x-1">→</span
+		>
+	</a>
+</li>

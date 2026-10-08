@@ -1,0 +1,79 @@
+---
+import { Image } from 'astro:assets';
+import ArticleMeta from '../components/ArticleMeta.astro';
+import BaseLayout from './BaseLayout.astro';
+import { postHref, type Post } from '../lib/posts';
+
+interface Props {
+	post: Post;
+	readingTime: number;
+	prev: Post | null;
+	next: Post | null;
+}
+
+const { post, readingTime, prev, next } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags } = post.data;
+---
+
+<BaseLayout
+	title={title}
+	description={description}
+	image={heroImage}
+	type="article"
+	publishedTime={pubDate}
+	tags={tags}
+>
+	<div class="pt-12 sm:pt-16">
+		<a href="/" class="text-xs text-slate-400 transition-colors hover:text-gray-800">
+			← 返回列表
+		</a>
+
+		<div class="mt-8">
+			<h1 class="max-w-2xl text-3xl font-medium tracking-tight text-gray-900 sm:text-4xl">
+				{title}
+			</h1>
+			<ArticleMeta pubDate={pubDate} updatedDate={updatedDate} readingTime={readingTime} tags={tags} />
+		</div>
+
+		{
+			heroImage && (
+				<div class="mt-10 overflow-hidden rounded-2xl border border-gray-100 bg-white">
+					<Image src={heroImage} alt="" widths={[720, 1080]} sizes="(min-width: 768px) 720px, 100vw" class="block w-full" />
+				</div>
+			)
+		}
+
+		<div class="prose mt-10">
+			<slot />
+		</div>
+
+		{
+			(prev || next) && (
+				<nav class="mt-14 border-t border-gray-200 pt-7" aria-label="文章导航">
+					<div class="grid grid-cols-2 gap-8 text-xs">
+						{prev ? (
+							<a href={postHref(prev)} class="group">
+								<span class="text-slate-400">← 上一篇</span>
+								<div class="mt-2 text-gray-700 transition-colors group-hover:text-gray-950">
+									{prev.data.title}
+								</div>
+							</a>
+						) : (
+							<span />
+						)}
+						{next ? (
+							<a href={postHref(next)} class="group text-right">
+								<span class="text-slate-400">下一篇 →</span>
+								<div class="mt-2 text-gray-700 transition-colors group-hover:text-gray-950">
+									{next.data.title}
+								</div>
+							</a>
+						) : (
+							<span />
+						)}
+					</div>
+				</nav>
+			)
+		}
+	</div>
+</BaseLayout>

@@ -1,0 +1,27 @@
+---
+import PostListItem from './PostListItem.astro';
+import { postHref, type Post } from '../lib/posts';
+
+interface Props {
+	posts: Post[];
+	emptyText?: string;
+}
+
+const { posts, emptyText = '暂无文章。' } = Astro.props;
+---
+
+{
+	posts.length > 0 ? (
+		<ul class="divide-y divide-gray-100">
+			{posts.map((post) => (
+				<PostListItem
+					title={post.data.title}
+					href={postHref(post)}
+					pubDate={post.data.pubDate}
+				/>
+			))}
+		</ul>
+	) : (
+		<p class="py-12 text-sm text-slate-400">{emptyText}</p>
+	)
+}

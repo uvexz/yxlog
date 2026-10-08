@@ -1,0 +1,25 @@
+---
+import type { TagCount } from '../lib/posts';
+
+interface Props {
+	tags: TagCount[];
+}
+
+const { tags } = Astro.props;
+---
+
+<ul class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+	{
+		tags.map(({ tag, count }) => (
+			<li>
+				<a
+					href={`/tags/${tag}/`}
+					class="group flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 transition hover:border-slate-300 hover:text-gray-950"
+				>
+					<span>{tag}</span>
+					<span class="text-xs tabular-nums text-slate-400">{count}</span>
+				</a>
+			</li>
+		))
+	}
+</ul>

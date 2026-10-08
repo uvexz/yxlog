@@ -1,63 +1,121 @@
-# Astro Starter Kit: Blog
+# 印象日志
 
-```sh
-bun create astro@latest -- --template blog
+一个极简、单栏、内容优先的个人博客。基于 [Astro](https://astro.build) 静态构建，支持 Markdown 写作、标签、分页、RSS 与站内搜索。
+
+## 技术栈
+
+- **Astro**（静态输出）+ 原生路由 + Content Collections
+- **TypeScript**
+- **Tailwind CSS v4**
+- **Kumo UI** + **React**（仅用于搜索这一个交互岛）
+
+## 快速开始
+
+使用 **bun**：
+
+```bash
+bun install       # 安装依赖
+bun dev           # 本地开发，http://localhost:4321
+bun run build     # 构建到 ./dist
+bun run preview   # 预览生产构建
+bunx astro check  # 类型检查
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 配置
 
-Features:
+**站点信息**在 `src/config/site.ts`，改这里即可：
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+```ts
+export const siteConfig = {
+  name: '印象日志',
+  title: '印象日志 — YJK 的个人博客',
+  description: '一个菜鸟开发者',
+  author: 'YJK',
+  url: 'https://yxlog.com',
+  language: 'zh-CN',
+  postsPerPage: 7,        // 首页每页文章数
+  social: [ /* 社交链接 */ ],
+  nav: [ /* 顶部导航 */ ],
+};
+```
 
-## 🚀 Project Structure
+**站点域名**同时需要改 `astro.config.mjs` 里的 `site`（用于 canonical、og:url、RSS 绝对地址、sitemap）：
 
-Inside of your Astro project, you'll see the following folders and files:
+```js
+export default defineConfig({
+  site: 'https://yxlog.com',
+  // ...
+});
+```
+
+**主题色与字体**在 `src/styles/global.css` 顶部的 `@theme` 中调整（`--color-paper`、`--color-ink`、`--color-accent`、字体回退等）。
+
+## 写作
+
+文章放在 `src/content/blog/`，**文件名即 URL slug**：
+
+```md
+---
+title: '文章标题'
+description: '用于 SEO 与 RSS 的摘要'
+pubDate: 2025-09-10
+updatedDate: 2025-09-12   # 可选
+tags: [astro, blog]
+heroImage: ../../assets/cover.jpg  # 可选
+draft: false              # 可选，draft 仅开发环境可见
+---
+
+正文……
+```
+
+- **标签**：直接写在 frontmatter 的 `tags` 里，标签页、数量、链接自动生成，无需额外配置。
+- **独立页面**：放在 `src/content/pages/`，访问路径为 `/文件名`（如 `about.md` → `/about`）。
+- 文章按 `pubDate` 倒序排列，列表、标签、分页、RSS、sitemap 会在下次构建时自动更新。
+
+## 路由
 
 ```text
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+/               首页（文章列表 + 分页）
+/[slug]/        文章详情
+/tags/          全部标签
+/tags/[tag]/    单个标签的文章
+/[page]/        内容页面（about、links …）
+/page/[n]/      首页分页
+/rss.xml        订阅源
+/feed.xml       订阅源
+/sitemap-index.xml
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 部署
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+本项目是**纯静态站点**，`bun run build` 后把 `dist/` 目录部署到任意静态托管即可，无需 Node 运行时。
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+通用设置：
 
-Any static assets, like images, can be placed in the `public/` directory.
+| 项 | 值 |
+| :-- | :-- |
+| 构建命令 | `bun run build` |
+| 输出目录 | `dist` |
+| Node 版本 | `>=22.12.0` |
 
-## 🧞 Commands
+**Cloudflare Pages**：连接 Git 仓库，填上表设置即可；或本地 `bunx wrangler pages deploy dist`。
 
-All commands are run from the root of the project, from a terminal:
+**Vercel**：Framework 选 Astro 自动识别；或 `bunx vercel --prod`。
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
+**Netlify**：`bunx netlify deploy --prod --dir=dist`。
 
-## 👀 Want to learn more?
+**GitHub Pages**：把 `astro.config.mjs` 的 `site` 改为 `https://<用户名>.github.io/<仓库名>`，构建后用 `dist/` 发布到 `gh-pages`。
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+**自建服务器（Nginx）**：构建后把 `dist/` 传到服务器：
 
-## Credit
+```nginx
+server {
+    listen 80;
+    server_name yxlog.com;
+    root /var/www/yxlog/dist;
+    index index.html;
+    location / { try_files $uri $uri/ $uri.html /index.html; }
+}
+```
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+> 部署前记得改 `site`（`astro.config.mjs`）和 `url`（`src/config/site.ts`）为你自己的域名。
