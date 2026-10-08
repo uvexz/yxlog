@@ -1,5 +1,6 @@
 ---
 import type { TagCount } from '../lib/posts';
+import { tagHref } from '../lib/tags';
 
 interface Props {
 	tags: TagCount[];
@@ -13,11 +14,11 @@ const { tags } = Astro.props;
 		tags.map(({ tag, count }) => (
 			<li>
 				<a
-					href={`/tags/${tag}/`}
+					href={tagHref(tag)}
 					class="group flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 transition hover:border-slate-300 hover:text-gray-950"
 				>
 					<span>{tag}</span>
-					<span class="text-xs tabular-nums text-slate-400">{count}</span>
+					<span class="text-xs tabular-nums text-slate-500">{count}</span>
 				</a>
 			</li>
 		))

@@ -12,6 +12,8 @@ interface Props {
 	image?: ImageMetadata;
 	type?: 'website' | 'article';
 	publishedTime?: Date;
+	modifiedTime?: Date;
+	noindex?: boolean;
 	tags?: string[];
 }
 
@@ -21,6 +23,8 @@ const {
 	image,
 	type = 'website',
 	publishedTime,
+	modifiedTime,
+	noindex,
 	tags,
 } = Astro.props;
 
@@ -36,6 +40,8 @@ const documentTitle = title ? `${title} — ${siteConfig.name}` : siteConfig.tit
 			image={image}
 			type={type}
 			publishedTime={publishedTime}
+			modifiedTime={modifiedTime}
+			noindex={noindex}
 			tags={tags}
 		/>
 	</head>

@@ -8,11 +8,13 @@ export interface TagCount {
 	count: number;
 }
 
-export interface SearchItem {
+export interface SearchIndexItem {
 	title: string;
 	href: string;
 	date: string;
 	tags: string[];
+	/** 正文纯文本，供站内搜索做全文匹配。 */
+	text: string;
 }
 
 export interface Pagination<T> {
@@ -75,12 +77,33 @@ export function postHref(post: Post): string {
 	return `/${post.id}/`;
 }
 
-export function toSearchItems(posts: Post[]): SearchItem[] {
+/**
+ * 把 Markdown 正文压成用于搜索的纯文本：丢掉代码块、行内代码与标记符号，
+ * 链接保留可读文字。搜索索引是构建期生成的，所以这里可以放宽处理。
+ */
+export function toPlainText(body: string | undefined): string {
+	return (body ?? '')
+		.replace(/```[\s\S]*?```/g, ' ')
+		.replace(/~~~[\s\S]*?~~~/g, ' ')
+		.replace(/`[^`\n]*`/g, ' ')
+		.replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+		.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+		.replace(/^\s{0,3}#{1,6}\s+/gm, ' ')
+		.replace(/^\s{0,3}>\s?/gm, ' ')
+		.replace(/^\s{0,3}(?:[-*+]|\d+\.)\s+/gm, ' ')
+		.replace(/<[^>]+>/g, ' ')
+		.replace(/[*_~|]/g, ' ')
+		.replace(/\s+/g, ' ')
+		.trim();
+}
+
+export function toSearchIndex(posts: Post[]): SearchIndexItem[] {
 	return posts.map((post) => ({
 		title: post.data.title,
 		href: postHref(post),
 		date: formatDate(post.data.pubDate),
 		tags: post.data.tags,
+		text: toPlainText(post.body),
 	}));
 }
 

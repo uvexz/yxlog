@@ -17,13 +17,13 @@ const tags = getAllTags(await getPublishedPosts());
 			tags.length > 0 ? (
 				<TagList tags={tags} />
 			) : (
-				<p class="text-sm text-slate-400">暂无标签。</p>
+				<p class="text-sm text-slate-500">暂无标签。</p>
 			)
 		}
 	</div>
 
 	<div class="mt-10 border-t border-gray-200 pt-8">
-		<a href="/" class="text-xs text-slate-400 transition-colors hover:text-gray-900">
+		<a href="/" class="text-xs text-slate-500 transition-colors hover:text-gray-900">
 			← 返回首页
 		</a>
 	</div>

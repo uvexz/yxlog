@@ -1,0 +1,176 @@
+---
+import { uiIconPaths } from '../lib/icons';
+
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+{/* 原生实现的站内搜索：无框架运行时，索引在首次打开时才拉取。 */}
+<div class:list={['flex items-center', className]} data-search>
+	<button
+		type="button"
+		data-search-toggle
+		aria-label="搜索文章"
+		aria-expanded="false"
+		aria-controls="site-search-panel"
+		class="-m-1.5 rounded-md p-1.5 text-slate-500 transition-colors hover:text-gray-900"
+	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="17"
+			height="17"
+			fill="currentColor"
+			viewBox="0 0 256 256"
+			aria-hidden="true"
+			set:html={uiIconPaths.search}
+		/>
+	</button>
+
+	<div
+		id="site-search-panel"
+		data-search-panel
+		hidden
+		class="absolute inset-x-6 top-full z-30 mt-4 sm:inset-x-8"
+	>
+		<div class="rounded-xl border border-gray-200 bg-white p-4">
+			<input
+				type="search"
+				data-search-input
+				placeholder="搜索文章…"
+				aria-label="搜索文章"
+				autocomplete="off"
+				class="w-full border-b border-gray-200 bg-transparent px-0 py-2 text-sm text-gray-800 outline-none placeholder:text-slate-500 focus:border-slate-500"
+			/>
+			<p
+				data-search-status
+				role="status"
+				aria-live="polite"
+				class="mt-3 text-xs text-slate-500 empty:mt-0"
+			>
+			</p>
+			<ul data-search-results hidden class="mt-2 divide-y divide-gray-100"></ul>
+		</div>
+	</div>
+</div>
+
+<script>
+	import type { SearchIndexItem } from '../lib/posts';
+
+	type PreparedItem = SearchIndexItem & { haystack: string };
+
+	const MAX_RESULTS = 8;
+
+	interface Elements {
+		root: HTMLElement;
+		toggle: HTMLButtonElement;
+		panel: HTMLElement;
+		input: HTMLInputElement;
+		status: HTMLElement;
+		list: HTMLUListElement;
+	}
+
+	function setup({ root, toggle, panel, input, status, list }: Elements) {
+		let open = false;
+		let failed = false;
+		let items: PreparedItem[] = [];
+		let request: Promise<void> | null = null;
+
+		function toListItem(item: SearchIndexItem): HTMLLIElement {
+			const li = document.createElement('li');
+			const link = document.createElement('a');
+			link.href = item.href;
+			link.className =
+				'flex items-center justify-between gap-4 py-2.5 text-sm transition-colors hover:text-gray-950';
+
+			const title = document.createElement('span');
+			title.className = 'text-gray-800';
+			title.textContent = item.title;
+
+			const date = document.createElement('span');
+			date.className = 'shrink-0 text-[11px] tabular-nums text-slate-500';
+			date.textContent = item.date;
+
+			link.append(title, date);
+			li.append(link);
+			return li;
+		}
+
+		function render() {
+			const query = input.value.trim().toLowerCase();
+
+			if (!query) {
+				list.replaceChildren();
+				list.hidden = true;
+				status.textContent = '';
+				return;
+			}
+
+			if (failed) {
+				list.replaceChildren();
+				list.hidden = true;
+				status.textContent = '搜索索引加载失败，请刷新后重试。';
+				return;
+			}
+
+			const matched = items.filter((item) => item.haystack.includes(query)).slice(0, MAX_RESULTS);
+			list.replaceChildren(...matched.map(toListItem));
+			list.hidden = matched.length === 0;
+			status.textContent = matched.length === 0 ? '未找到相关文章。' : '';
+		}
+
+		function load(): Promise<void> {
+			request ??= fetch(`${import.meta.env.BASE_URL}search.json`)
+				.then(async (response) => {
+					if (!response.ok) throw new Error(String(response.status));
+					const data: SearchIndexItem[] = await response.json();
+					items = data.map((item) => ({
+						...item,
+						haystack: `${item.title} ${item.tags.join(' ')} ${item.text}`.toLowerCase(),
+					}));
+				})
+				.catch(() => {
+					failed = true;
+				})
+				.finally(render);
+			return request;
+		}
+
+		function setOpen(next: boolean) {
+			open = next;
+			panel.hidden = !next;
+			toggle.setAttribute('aria-expanded', String(next));
+			if (next) {
+				input.focus();
+				void load();
+			}
+		}
+
+		toggle.addEventListener('click', () => setOpen(!open));
+		input.addEventListener('input', render);
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && open) {
+				setOpen(false);
+				toggle.focus();
+			}
+		});
+
+		document.addEventListener('pointerdown', (event) => {
+			if (open && !root.contains(event.target as Node)) setOpen(false);
+		});
+	}
+
+	const root = document.querySelector<HTMLElement>('[data-search]');
+	const toggle = root?.querySelector<HTMLButtonElement>('[data-search-toggle]');
+	const panel = root?.querySelector<HTMLElement>('[data-search-panel]');
+	const input = root?.querySelector<HTMLInputElement>('[data-search-input]');
+	const status = root?.querySelector<HTMLElement>('[data-search-status]');
+	const list = root?.querySelector<HTMLUListElement>('[data-search-results]');
+
+	if (root && toggle && panel && input && status && list) {
+		setup({ root, toggle, panel, input, status, list });
+	}
+</script>

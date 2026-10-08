@@ -1,7 +1,6 @@
 ---
-import Search from './Search.tsx';
+import Search from './Search.astro';
 import { siteConfig } from '../config/site';
-import { getPublishedPosts, toSearchItems } from '../lib/posts';
 
 const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
 
@@ -10,8 +9,6 @@ function isActive(href: string): boolean {
 	if (target === '/') return pathname === '/';
 	return pathname === target || pathname.startsWith(`${target}/`);
 }
-
-const searchItems = toSearchItems(await getPublishedPosts());
 ---
 
 <header class="relative mx-auto w-full max-w-3xl px-6 pt-7 sm:px-8">
@@ -29,11 +26,11 @@ const searchItems = toSearchItems(await getPublishedPosts());
 				>
 					{item.label}
 					{isActive(item.href) && (
-						<span class="absolute inset-x-0 -bottom-0.5 h-px bg-[#7b9bbd]" aria-hidden="true" />
+						<span class="absolute inset-x-0 -bottom-0.5 h-px bg-accent" aria-hidden="true" />
 					)}
 				</a>
 			))}
-			<Search client:idle items={searchItems} />
+			<Search />
 		</nav>
 	</div>
 </header>

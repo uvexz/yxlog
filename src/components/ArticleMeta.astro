@@ -1,5 +1,6 @@
 ---
 import { formatDate } from '../lib/posts';
+import { tagHref } from '../lib/tags';
 
 interface Props {
 	pubDate: Date;
@@ -11,7 +12,7 @@ interface Props {
 const { pubDate, updatedDate, readingTime, tags } = Astro.props;
 ---
 
-<div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-slate-400">
+<div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-slate-500">
 	<time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
 	<span aria-hidden="true">·</span>
 	<span>约 {readingTime} 分钟</span>
@@ -19,11 +20,11 @@ const { pubDate, updatedDate, readingTime, tags } = Astro.props;
 		tags.map((tag) => (
 			<>
 				<span aria-hidden="true">·</span>
-				<a href={`/tags/${tag}/`} class="transition-colors hover:text-gray-900">
+				<a href={tagHref(tag)} class="transition-colors hover:text-gray-900">
 					#{tag}
 				</a>
 			</>
 		))
 	}
-	{updatedDate && <span class="text-slate-400">更新于 {formatDate(updatedDate)}</span>}
+	{updatedDate && <span>更新于 {formatDate(updatedDate)}</span>}
 </div>

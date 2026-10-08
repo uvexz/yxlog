@@ -46,6 +46,8 @@ export interface SiteConfig {
 	url: string;
 	language: string;
 	postsPerPage: number;
+	/** 文章没有 heroImage 时使用的默认社交分享图（相对 public/ 的绝对路径）。 */
+	ogImage: string;
 	social: SocialLink[];
 	nav: NavLink[];
 }
@@ -58,15 +60,17 @@ export const siteConfig: SiteConfig = {
 	url: 'https://yxlog.com',
 	language: 'zh-CN',
 	postsPerPage: 7,
+	ogImage: '/android-chrome-512x512.png',
 	social: [
-    { label: 'GitHub', href: 'https://github.com/uvexz', icon: 'github' },
-    { label: 'im.sb', href: 'https://im.sb', icon: 'planet' },
+		{ label: 'GitHub', href: 'https://github.com/uvexz', icon: 'github' },
+		{ label: 'im.sb', href: 'https://im.sb', icon: 'planet' },
 		{ label: 'RSS', href: '/rss.xml', icon: 'rss' },
 	],
+	// 站内链接统一带尾部斜杠，与 trailingSlash: 'always' 保持一致。
 	nav: [
 		{ label: '首页', href: '/' },
-		{ label: '标签', href: '/tags' },
-    { label: '关于', href: '/about' },
-		{ label: '友链', href: '/links' },
+		{ label: '标签', href: '/tags/' },
+		{ label: '关于', href: '/about/' },
+		{ label: '友链', href: '/links/' },
 	],
 };

@@ -21,10 +21,11 @@ const { title, description, pubDate, updatedDate, heroImage, tags } = post.data;
 	image={heroImage}
 	type="article"
 	publishedTime={pubDate}
+	modifiedTime={updatedDate}
 	tags={tags}
 >
 	<div class="pt-12 sm:pt-16">
-		<a href="/" class="text-xs text-slate-400 transition-colors hover:text-gray-800">
+		<a href="/" class="text-xs text-slate-500 transition-colors hover:text-gray-800">
 			← 返回列表
 		</a>
 
@@ -53,7 +54,7 @@ const { title, description, pubDate, updatedDate, heroImage, tags } = post.data;
 					<div class="grid grid-cols-2 gap-8 text-xs">
 						{prev ? (
 							<a href={postHref(prev)} class="group">
-								<span class="text-slate-400">← 上一篇</span>
+								<span class="text-slate-500">← 上一篇</span>
 								<div class="mt-2 text-gray-700 transition-colors group-hover:text-gray-950">
 									{prev.data.title}
 								</div>
@@ -63,7 +64,7 @@ const { title, description, pubDate, updatedDate, heroImage, tags } = post.data;
 						)}
 						{next ? (
 							<a href={postHref(next)} class="group text-right">
-								<span class="text-slate-400">下一篇 →</span>
+								<span class="text-slate-500">下一篇 →</span>
 								<div class="mt-2 text-gray-700 transition-colors group-hover:text-gray-950">
 									{next.data.title}
 								</div>

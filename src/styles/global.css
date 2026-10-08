@@ -1,5 +1,3 @@
-@source "../../node_modules/@cloudflare/kumo/dist/**/*.{js,jsx,ts,tsx}";
-@import "@cloudflare/kumo/styles";
 @import "tailwindcss";
 
 @theme {
@@ -13,7 +11,8 @@
 	--color-ink: #1f2937;
 	--color-muted: #64748b;
 	--color-line: #e5e7eb;
-	--color-accent: #7b9bbd;
+	/* 正文链接与焦点环：在 --color-paper 上达到 WCAG AA 4.84:1（原 #7b9bbd 仅 2.77:1） */
+	--color-accent: #4f7292;
 }
 
 @layer base {

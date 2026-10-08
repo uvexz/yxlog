@@ -7,7 +7,8 @@
 - **Astro**（静态输出）+ 原生路由 + Content Collections
 - **TypeScript**
 - **Tailwind CSS v4**
-- **Kumo UI** + **React**（仅用于搜索这一个交互岛）
+
+站内搜索是原生实现的（`src/components/Search.astro`），页面不加载任何框架运行时；搜索索引在构建期生成到 `/search.json`，首次打开搜索框时才按需拉取。
 
 ## 快速开始
 
@@ -34,16 +35,19 @@ export const siteConfig = {
   url: 'https://yxlog.com',
   language: 'zh-CN',
   postsPerPage: 7,        // 首页每页文章数
+  ogImage: '/android-chrome-512x512.png',  // 文章没有 heroImage 时的分享图
   social: [ /* 社交链接 */ ],
   nav: [ /* 顶部导航 */ ],
 };
 ```
 
-**站点域名**同时需要改 `astro.config.mjs` 里的 `site`（用于 canonical、og:url、RSS 绝对地址、sitemap）：
+**站点域名**同时需要改 `astro.config.mjs` 里的 `site`（用于 canonical、og:url、RSS 绝对地址、sitemap）与 `public/robots.txt` 里的 Sitemap 地址：
 
 ```js
 export default defineConfig({
   site: 'https://yxlog.com',
+  // 站内链接统一带尾部斜杠；Markdown 里手写的站内链接会在构建时自动补齐
+  trailingSlash: 'always',
   // ...
 });
 ```
@@ -68,8 +72,9 @@ draft: false              # 可选，draft 仅开发环境可见
 正文……
 ```
 
-- **标签**：直接写在 frontmatter 的 `tags` 里，标签页、数量、链接自动生成，无需额外配置。
-- **独立页面**：放在 `src/content/pages/`，访问路径为 `/文件名`（如 `about.md` → `/about`）。
+- **标签**：直接写在 frontmatter 的 `tags` 里，标签页、数量、链接自动生成，无需额外配置。标签名会转成 URL slug（小写、空白转连字符），例如 `Open Source` → `/tags/open-source/`；改标签名等于改 URL。
+- **独立页面**：放在 `src/content/pages/`，访问路径为 `/文件名/`（如 `about.md` → `/about/`）。
+- **站内链接**：正文里手写的 `/some-post` 会在构建时自动补上尾部斜杠，与 `trailingSlash: 'always'` 保持一致。
 - 文章按 `pubDate` 倒序排列，列表、标签、分页、RSS、sitemap 会在下次构建时自动更新。
 
 ## 路由
@@ -78,12 +83,15 @@ draft: false              # 可选，draft 仅开发环境可见
 /               首页（文章列表 + 分页）
 /[slug]/        文章详情
 /tags/          全部标签
-/tags/[tag]/    单个标签的文章
+/tags/[tag]/    单个标签的文章（tag 为 slug）
 /[page]/        内容页面（about、links …）
 /page/[n]/      首页分页
 /rss.xml        订阅源
 /feed.xml       订阅源
+/search.json    站内搜索索引
 /sitemap-index.xml
+/robots.txt
+/404.html
 ```
 
 ## 部署
@@ -106,7 +114,7 @@ draft: false              # 可选，draft 仅开发环境可见
 
 **GitHub Pages**：把 `astro.config.mjs` 的 `site` 改为 `https://<用户名>.github.io/<仓库名>`，构建后用 `dist/` 发布到 `gh-pages`。
 
-**自建服务器（Nginx）**：构建后把 `dist/` 传到服务器：
+**自建服务器（Nginx）**：构建后把 `dist/` 传到服务器。注意 `404.html` 要真的返回 404 状态码，否则未知路径会被兜成「软 404」，对 SEO 不利：
 
 ```nginx
 server {
@@ -114,7 +122,9 @@ server {
     server_name yxlog.com;
     root /var/www/yxlog/dist;
     index index.html;
-    location / { try_files $uri $uri/ $uri.html /index.html; }
+
+    location / { try_files $uri $uri/ $uri.html =404; }
+    error_page 404 /404.html;
 }
 ```
 
