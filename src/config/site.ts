@@ -73,7 +73,7 @@ export const siteConfig: SiteConfig = {
 	ogImage: '/android-chrome-512x512.png',
 	// 自托管评论系统 ascs：把 embedUrl 换成线上服务地址（如 https://comments.example.com/embed.js）。
 	comments: {
-		embedUrl: 'http://comments.im.sb/embed.js',
+		embedUrl: 'https://comments.im.sb/embed.js',
 		siteId: '67e4bfe5-6e37-43ad-bce3-1c8cadcadd87',
 		targetId: 'ascs-comments',
 	},
