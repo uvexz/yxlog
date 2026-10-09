@@ -36,10 +36,17 @@ export const siteConfig = {
   language: 'zh-CN',
   postsPerPage: 7,        // 首页每页文章数
   ogImage: '/android-chrome-512x512.png',  // 文章没有 heroImage 时的分享图
+  comments: {             // 评论系统（自托管 ascs）
+    embedUrl: 'http://localhost:3000/embed.js',  // 换成线上服务地址
+    siteId: 'de23f8f2-f63e-4fd3-a9bc-1eb4483245b5',
+    targetId: 'ascs-comments',
+  },
   social: [ /* 社交链接 */ ],
   nav: [ /* 顶部导航 */ ],
 };
 ```
+
+**评论**由自托管的 ascs 提供，配置见上面的 `comments`。评论会出现在**所有文章**与**内容页面**（`about`、`links` …）底部，组件是 `src/components/Comments.astro`；`embedUrl` 需指向线上评论服务（默认的 `localhost:3000` 仅本地可用）。
 
 **站点域名**同时需要改 `astro.config.mjs` 里的 `site`（用于 canonical、og:url、RSS 绝对地址、sitemap）与 `public/robots.txt` 里的 Sitemap 地址：
 

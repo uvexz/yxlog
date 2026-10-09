@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Comments from '../components/Comments.astro';
 import { siteConfig } from '../config/site';
 import { getCollection, render } from 'astro:content';
 
@@ -27,4 +28,6 @@ const { Content } = await render(entry);
 			<Content />
 		</div>
 	</div>
+
+	<Comments />
 </BaseLayout>

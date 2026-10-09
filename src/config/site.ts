@@ -38,6 +38,15 @@ export interface NavLink {
 	href: string;
 }
 
+export interface CommentsConfig {
+	/** 评论系统（自托管 ascs）的 embed 脚本地址。 */
+	embedUrl: string;
+	/** 评论系统分配的站点 ID。 */
+	siteId: string;
+	/** embed 脚本注入评论的容器 id。 */
+	targetId: string;
+}
+
 export interface SiteConfig {
 	name: string;
 	title: string;
@@ -48,6 +57,7 @@ export interface SiteConfig {
 	postsPerPage: number;
 	/** 文章没有 heroImage 时使用的默认社交分享图（相对 public/ 的绝对路径）。 */
 	ogImage: string;
+	comments: CommentsConfig;
 	social: SocialLink[];
 	nav: NavLink[];
 }
@@ -61,6 +71,12 @@ export const siteConfig: SiteConfig = {
 	language: 'zh-CN',
 	postsPerPage: 7,
 	ogImage: '/android-chrome-512x512.png',
+	// 自托管评论系统 ascs：把 embedUrl 换成线上服务地址（如 https://comments.example.com/embed.js）。
+	comments: {
+		embedUrl: 'http://comments.im.sb/embed.js',
+		siteId: '67e4bfe5-6e37-43ad-bce3-1c8cadcadd87',
+		targetId: 'ascs-comments',
+	},
 	social: [
 		{ label: 'GitHub', href: 'https://github.com/uvexz', icon: 'github' },
 		{ label: 'im.sb', href: 'https://im.sb', icon: 'planet' },

@@ -1,0 +1,10 @@
+---
+import { siteConfig } from '../config/site';
+
+const { embedUrl, siteId, targetId } = siteConfig.comments;
+---
+
+<section class="mt-14 border-t border-gray-200 pt-7" aria-label="评论">
+	<div id={targetId}></div>
+	<script is:inline src={embedUrl} data-site={siteId} data-target={targetId} defer></script>
+</section>
