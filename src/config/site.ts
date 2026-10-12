@@ -79,7 +79,8 @@ export const siteConfig: SiteConfig = {
 	},
 	social: [
 		{ label: 'GitHub', href: 'https://github.com/uvexz', icon: 'github' },
-		{ label: 'im.sb', href: 'https://im.sb', icon: 'planet' },
+		{ label: 'Memos', href: 'https://memos.im.sb', icon: 'planet' },
+		{ label: 'IM.SB', href: 'https://im.sb', icon: 'web' },
 		{ label: 'RSS', href: '/rss.xml', icon: 'rss' },
 	],
 	// 站内链接统一带尾部斜杠，与 trailingSlash: 'always' 保持一致。
