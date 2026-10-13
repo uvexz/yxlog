@@ -7,8 +7,11 @@
 - **Astro**（静态输出）+ 原生路由 + Content Collections
 - **TypeScript**
 - **Tailwind CSS v4**
+- **instant.page**（悬停/触摸时即时预加载页面）
 
 站内搜索是原生实现的（`src/components/Search.astro`），页面不加载任何框架运行时；搜索索引在构建期生成到 `/search.json`，首次打开搜索框时才按需拉取。
+
+页面预加载由 [instant.page](https://instant.page) 提供：用户悬停链接约 65ms 后浏览器即开始预取目标页，使页面切换接近「秒开」。脚本在 `src/layouts/BaseLayout.astro` 中以 `import 'instant.page'` 引入，随构建打包，**不请求第三方 CDN**。想调整预加载时机，可在该文件 `<body>` 上加 `data-instant-intensity`（`mousedown`、`mousedown-only`、`viewport`、`viewport-all` 或毫秒数）。
 
 ## 快速开始
 
