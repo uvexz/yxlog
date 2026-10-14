@@ -36,6 +36,7 @@ export interface SocialLink {
 export interface NavLink {
 	label: string;
 	href: string;
+	external?: boolean;
 }
 
 export interface CommentsConfig {
@@ -89,5 +90,6 @@ export const siteConfig: SiteConfig = {
 		{ label: '标签', href: '/tags/' },
 		{ label: '关于', href: '/about/' },
 		{ label: '友链', href: '/links/' },
+		{ label: 'im.sb', href: 'https://im.sb', external: true },
 	],
 };

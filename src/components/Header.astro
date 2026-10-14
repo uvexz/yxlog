@@ -18,6 +18,8 @@ function isActive(href: string): boolean {
 			{siteConfig.nav.map((item) => (
 				<a
 					href={item.href}
+					target={item.external ? '_blank' : undefined}
+					rel={item.external ? 'noopener noreferrer' : undefined}
 					aria-current={isActive(item.href) ? 'page' : undefined}
 					class:list={[
 						'relative py-1 transition-colors hover:text-gray-900',
