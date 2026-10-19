@@ -1,6 +1,6 @@
 ---
 import PostListItem from './PostListItem.astro';
-import { postHref, type Post } from '../lib/posts';
+import { postDate, postHref, type Post } from '../lib/posts';
 
 interface Props {
 	posts: Post[];
@@ -17,7 +17,7 @@ const { posts, emptyText = '暂无文章。' } = Astro.props;
 				<PostListItem
 					title={post.data.title}
 					href={postHref(post)}
-					pubDate={post.data.pubDate}
+					date={postDate(post)}
 				/>
 			))}
 		</ul>

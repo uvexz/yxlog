@@ -24,13 +24,22 @@ export interface Pagination<T> {
 	total: number;
 }
 
+/** 文章的有效日期：优先取更新日期，没有更新日期时取创建日期。 */
+export function postDate(post: Post): Date {
+	return post.data.updatedDate ?? post.data.pubDate;
+}
+
 /**
  * Published posts, newest first. Drafts are hidden in production builds but
  * remain visible during development so they can be previewed.
  */
 export async function getPublishedPosts(): Promise<Post[]> {
 	const posts = await getCollection('blog', ({ data }) => !data.draft || !import.meta.env.PROD);
-	return posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+	return posts.sort(
+		(a, b) =>
+			postDate(b).valueOf() - postDate(a).valueOf() ||
+			b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+	);
 }
 
 export function formatDate(date: Date): string {
